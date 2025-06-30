@@ -23,11 +23,8 @@ const client = net.createConnection(
 );
 
 client.on("data", (data) => {
-  //const peers = JSON.parse(data.toString()).peers;
+  const peers = JSON.parse(data.toString()).peers;
 
-  console.log(data.toString())
-
-  /*
   if (Array.isArray(peers) && peers.length > 0) {
     const randomIndex = Math.floor(Math.random() * peers.length);
     selectedPeer = peers[randomIndex];
@@ -60,7 +57,6 @@ client.on("data", (data) => {
   } else {
     console.log("No peers available to select.");
   }
-    */
 
   client.end();
 });
