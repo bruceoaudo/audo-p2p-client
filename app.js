@@ -3,9 +3,9 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const serverPort = process.env.SERVER_PORT;
+const serverPort = Number(process.env.SERVER_PORT);
 const serverHost = process.env.SERVER_HOST;
-const localPort = process.env.LOCAL_PORT;
+const localPort = Number(process.env.LOCAL_PORT);
 
 let selectedPeer;
 
