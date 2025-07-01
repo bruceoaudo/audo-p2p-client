@@ -17,7 +17,7 @@ function registerAndFetchPeers(callback) {
     () => {
       const request = JSON.stringify({
         action: "register",
-        port: client.localPort,
+        port: localPort,
       });
       client.write(request + "\n");
     }
