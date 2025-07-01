@@ -5,7 +5,7 @@ dotenv.config();
 
 const serverPort = Number(process.env.SERVER_PORT);
 const serverHost = process.env.SERVER_HOST;
-const localPort = Number(process.env.LOCAL_PORT)
+const localPort = Number(process.env.LOCAL_PORT);
 
 let peers = [];
 let myPublicIP = null;
@@ -52,13 +52,15 @@ function startPeerServer() {
 
     sock.on("data", (data) => {
       dataBuffer += data;
+
+      // Close connection after receiving data
+      sock.end()
     });
 
     sock.on("end", () => {
       console.log(
         `Received from peer ${sock.remoteAddress}:${sock.remotePort}: ${dataBuffer}`
       );
-      sock.write(`Received your message: ${dataBuffer}`);
     });
 
     sock.on("error", (err) => {
@@ -66,7 +68,7 @@ function startPeerServer() {
     });
   });
 
-  server.listen(localPort, '0.0.0.0', () => {
+  server.listen(localPort, "0.0.0.0", () => {
     console.log(`Peer listening on port ${localPort}`);
     connectToRandomPeer(); // Connect only after server starts
   });
@@ -91,8 +93,6 @@ function connectToRandomPeer() {
     () => {
       const message = `Hello from ${myPublicIP}:${localPort}`;
       peerConnection.write(message + "\n");
-
-      sock.end()
     }
   );
 
