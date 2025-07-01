@@ -5,7 +5,7 @@ dotenv.config();
 
 const serverPort = Number(process.env.SERVER_PORT);
 const serverHost = process.env.SERVER_HOST;
-const localPort = Number(process.env.LOCAL_PORT);
+const localPort = Number(process.env.LOCAL_PORT)
 
 let peers = [];
 let myPublicIP = null;
@@ -13,14 +13,12 @@ let myPublicIP = null;
 // Step 1: Connect to bootstrap server and get peers
 function registerAndFetchPeers(callback) {
   const client = net.createConnection(
-    { host: serverHost, port: serverPort, localPort: localPort },
+    { host: serverHost, port: serverPort },
     () => {
       const request = JSON.stringify({
         action: "register",
-        port: localPort,
+        port: client.localPort,
       });
-      client.write(request + "\n");
-
       client.write(request + "\n");
     }
   );
@@ -91,7 +89,7 @@ function connectToRandomPeer() {
   const peerConnection = net.createConnection(
     { host: chosenPeer.ip, port: chosenPeer.port },
     () => {
-      const message = `Hello from ${localPort}`;
+      const message = `Hello from ${myPublicIP}:${localPort}`;
       peerConnection.write(message + "\n");
     }
   );
