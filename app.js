@@ -53,14 +53,16 @@ function startPeerServer() {
     sock.on("data", (data) => {
       dataBuffer += data;
 
-      // Close connection after receiving data
-      sock.end()
-    });
-
-    sock.on("end", () => {
       console.log(
         `Received from peer ${sock.remoteAddress}:${sock.remotePort}: ${dataBuffer}`
       );
+
+      // Close connection after receiving data
+      sock.end();
+    });
+
+    sock.on("end", () => {
+      // Do nothing for now
     });
 
     sock.on("error", (err) => {
