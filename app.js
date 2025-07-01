@@ -66,7 +66,7 @@ function startPeerServer() {
     });
   });
 
-  server.listen(localPort, () => {
+  server.listen(localPort, '0.0.0.0', () => {
     console.log(`Peer listening on port ${localPort}`);
     connectToRandomPeer(); // Connect only after server starts
   });
@@ -91,6 +91,8 @@ function connectToRandomPeer() {
     () => {
       const message = `Hello from ${myPublicIP}:${localPort}`;
       peerConnection.write(message + "\n");
+
+      sock.end()
     }
   );
 
