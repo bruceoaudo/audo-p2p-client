@@ -15,7 +15,12 @@ function registerAndFetchPeers(callback) {
   const client = net.createConnection(
     { host: serverHost, port: serverPort, localPort: localPort },
     () => {
-      const request = JSON.stringify({ action: "register" });
+      const request = JSON.stringify({
+        action: "register",
+        port: localPort,
+      });
+      client.write(request + "\n");
+
       client.write(request + "\n");
     }
   );
@@ -84,7 +89,7 @@ function connectToRandomPeer() {
   console.log(`Connecting to peer: ${chosenPeer.ip}`);
 
   const peerConnection = net.createConnection(
-    { host: chosenPeer.ip, port: localPort },
+    { host: chosenPeer.ip, port: chosenPeer.port },
     () => {
       const message = `Hello from ${localPort}`;
       peerConnection.write(message + "\n");
