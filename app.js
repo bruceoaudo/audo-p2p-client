@@ -8,6 +8,7 @@ const serverHost = process.env.SERVER_HOST;
 const localPort = Number(process.env.LOCAL_PORT);
 
 let peers = [];
+let myPublicIP = null;
 
 // Step 1: Connect to bootstrap server and get peers
 function registerAndFetchPeers(callback) {
@@ -23,14 +24,17 @@ function registerAndFetchPeers(callback) {
     try {
       const response = JSON.parse(data.toString());
       peers = response.peers || [];
+      myPublicIP = response.yourIP;
+
       console.log("Received peers from bootstrap:", peers);
+      console.log("My public IP as seen by server:", myPublicIP);
     } catch (err) {
       console.error("Error parsing bootstrap response:", err.message);
     }
   });
 
   client.on("end", () => {
-    callback(); // Proceed only after connection ends
+    callback();
   });
 
   client.on("error", (err) => {
@@ -61,18 +65,21 @@ function startPeerServer() {
 
   server.listen(localPort, () => {
     console.log(`Peer listening on port ${localPort}`);
-    connectToRandomPeer(); // Step 3: After server starts, connect to random peer
+    connectToRandomPeer(); // Connect only after server starts
   });
 }
 
-// Step 3: Connect to a random peer and send a message
+// Step 3: Connect to a random peer (but never self)
 function connectToRandomPeer() {
-  if (!peers.length) {
-    console.log("No peers available.");
+  const availablePeers = peers.filter((p) => p.ip !== myPublicIP);
+
+  if (!availablePeers.length) {
+    console.log("No available peers (other than self) to connect to.");
     return;
   }
 
-  const chosenPeer = peers[Math.floor(Math.random() * peers.length)];
+  const chosenPeer =
+    availablePeers[Math.floor(Math.random() * availablePeers.length)];
 
   console.log(`Connecting to peer: ${chosenPeer.ip}`);
 
